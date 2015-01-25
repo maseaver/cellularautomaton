@@ -231,7 +231,7 @@ def main():
     while True:
         userInput = sanitizedMidRunCommand()
 
-        print userInput
+        #print userInput
 
         if userInput != "":
             if userInput == "q":
