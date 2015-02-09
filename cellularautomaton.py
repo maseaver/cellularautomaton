@@ -1,5 +1,3 @@
-import sys
-
 class State(object):
     def __init__(self):
         self.maxX = 76
