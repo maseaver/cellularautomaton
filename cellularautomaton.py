@@ -175,14 +175,15 @@ display it, and solicit input again."""
     print
 
 def sanitizedMidRunCommand():
-    intentGotten = False
 
     commandStrings = ["",
                       "h",
                       "q",]
 
 
-    while intentGotten == False:
+    userInput = None
+
+    while userInput is None:
         command = raw_input("""\
     Value and point or points, press enter to advance, the lowercase letter h to
 print the introductory message, or the lowercase letter q to end.
@@ -197,7 +198,6 @@ print the introductory message, or the lowercase letter q to end.
 
         if commandList[0] in commandStrings:
             userInput = commandList[0]
-            intentGotten = True
         else:
             trimmedCommandListCopy = commandList[:5]
             for i in range(len(trimmedCommandListCopy)):
@@ -214,9 +214,7 @@ print the introductory message, or the lowercase letter q to end.
                 if len(userInput) < 5:
                     for i in range(5 - len(userInput)):
                         userInput.append(None)
-                intentGotten = True
-    else:
-        return userInput
+    return userInput
 
 def main():
     state = State()
