@@ -199,21 +199,14 @@ print the introductory message, or the lowercase letter q to end.
         if commandList[0] in commandStrings:
             userInput = commandList[0]
         else:
-            trimmedCommandListCopy = commandList[:5]
-            for i in range(len(trimmedCommandListCopy)):
-                try:
-                    int(commandList[i])
-                except ValueError:
-                    print """\
+            try:
+                userInput = [int(x) for x in commandList[:5]]
+            except ValueError:
+                print """\
     At least one of those doesn't look like an integer to me."""
-                    break
-                else:
-                    trimmedCommandListCopy[i] = int(commandList[i])
-            else:
-                userInput = trimmedCommandListCopy
-                if len(userInput) < 5:
-                    for i in range(5 - len(userInput)):
-                        userInput.append(None)
+                continue
+            while len(userInput) < 5:
+                userInput.append(None)
     return userInput
 
 def main():
