@@ -20,9 +20,9 @@ class State(object):
         prompt = "    Enter the " + name + " as an integer from 1 to "
         prompt = prompt + str(maximum) + " inclusive: "
 
-        valueGotten = False
+        value = None
 
-        while valueGotten == False:
+        while value is None:
             userInput = raw_input(prompt)
             print
             inputList = userInput.split()
@@ -32,19 +32,16 @@ class State(object):
                 if len(firstInput) == 1:
                     try:
                         value = int(firstInput)
-                        valueGotten = True
                     except ValueError:
                         print notAnIntError
                 else:
                     try:
                         value = int(firstInput[:2])
-                        valueGotten = True
                     except ValueError:
                         print notAnIntError
             else:
                 print noInput
                 value = 10
-                valueGotten = True
 
         if value <= 0:
             value = 1
