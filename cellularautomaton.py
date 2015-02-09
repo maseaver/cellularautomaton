@@ -212,9 +212,9 @@ print the introductory message, or the lowercase letter q to end.
 def main():
     state = State()
     print
-    state.drawBoard()
 
     while True:
+        state.drawBoard()
         userInput = sanitizedMidRunCommand()
 
         if userInput != "":
@@ -234,7 +234,6 @@ def main():
                 state.drawBoard("    ")
 
         state.rows = state.calculateBoard()
-        state.drawBoard()
 
 if __name__ == "__main__":
     introduction()
