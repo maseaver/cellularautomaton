@@ -36,13 +36,13 @@ class State(object):
                         value = int(firstInput)
                         valueGotten = True
                     except ValueError:
-                        print notAnInt
+                        print notAnIntError
                 else:
                     try:
                         value = int(firstInput[:2])
                         valueGotten = True
                     except ValueError:
-                        print notAnInt
+                        print notAnIntError
             else:
                 print noInput
                 value = 10
