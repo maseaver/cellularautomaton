@@ -197,7 +197,7 @@ print the introductory message, or the lowercase letter q to end.
             commandList.append("")
 
         if commandList[0] in commandStrings:
-            userInput = commandList[0]
+            userInput = commandList[:1]
         else:
             try:
                 userInput = [int(x) for x in commandList[:5]]
@@ -217,21 +217,24 @@ def main():
         state.drawBoard()
         userInput = sanitizedMidRunCommand()
 
-        if userInput != "":
-            if userInput == "q":
-                break
-            elif userInput[0] == "h":
-                introduction()
-                state.drawBoard()
-                continue
-            else:
-                num = userInput[0]
-                col1 = userInput[1]
-                row1 = userInput[2]
-                col2 = userInput[3]
-                row2 = userInput[4]
-                state.rows = state.setPoints(num, col1, row1, col2, row2)
-                state.drawBoard("    ")
+        what = userInput[0]
+
+        if what == "q":
+            break
+
+        if what == "h":
+            introduction()
+            state.drawBoard()
+            continue
+
+        if isinstance(what, int):
+            num = userInput[0]
+            col1 = userInput[1]
+            row1 = userInput[2]
+            col2 = userInput[3]
+            row2 = userInput[4]
+            state.rows = state.setPoints(num, col1, row1, col2, row2)
+            state.drawBoard("    ")
 
         state.rows = state.calculateBoard()
 
