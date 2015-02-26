@@ -1,5 +1,3 @@
-import sys
-
 class State(object):
     def __init__(self):
         self.maxX = 76
@@ -7,7 +5,7 @@ class State(object):
 
         self.x = self.sanitizedDimension("width", self.maxX)
         self.y = self.sanitizedDimension("height", self.maxY)
-        
+
         self.rows = [[]] * self.y
         for row in range(self.y):
             cells = [[]] * self.x
@@ -18,13 +16,13 @@ class State(object):
     def sanitizedDimension(self, name, maximum):
         notAnIntError = "That doesn't look like an integer to me.\n"
         noInput = "    I'll just assume 10.\n"
-        
+
         prompt = "    Enter the " + name + " as an integer from 1 to "
         prompt = prompt + str(maximum) + " inclusive: "
 
-        valueGotten = False
+        value = None
 
-        while valueGotten == False:
+        while value is None:
             userInput = raw_input(prompt)
             print
             inputList = userInput.split()
@@ -34,20 +32,17 @@ class State(object):
                 if len(firstInput) == 1:
                     try:
                         value = int(firstInput)
-                        valueGotten = True
                     except ValueError:
-                        print notAnInt
+                        print notAnIntError
                 else:
                     try:
                         value = int(firstInput[:2])
-                        valueGotten = True
                     except ValueError:
-                        print notAnInt
+                        print notAnIntError
             else:
                 print noInput
                 value = 10
-                valueGotten = True
-        
+
         if value <= 0:
             value = 1
         elif value > maximum:
@@ -85,7 +80,7 @@ class State(object):
         if value not in range(maxValue) and value != None:
             value = value % maxValue
         return value
-            
+
     def calculateCell(self, row, col):
         value = self.rows[row][col]
         neighbors = {
@@ -98,7 +93,7 @@ class State(object):
 "east" : self.rows[self.bound(row, self.y)][self.bound(col + 1, self.x)],
 "nEast" : self.rows[self.bound(row - 1, self.y)][self.bound(col + 1, self.x)],
             }
-            
+
         if value > 0:
             value = value - 1
         if neighbors["north"] > 0:
@@ -136,7 +131,7 @@ class State(object):
         rowMax = self.bound(max(row1, row2) + 1, self.y + 1)
         colMin = self.bound(min(col1, col2), self.x)
         colMax = self.bound(max(col1, col2) + 1, self.x + 1)
-        
+
         if rowMin == rowMax and colMin == colMax:
             self.setPoint(num, rowMin, rowMax)
         else:
@@ -163,7 +158,7 @@ as separate integer values. It will then draw a blank board and solicit your
 input, at which point you have five options:
   1. you may input a value and a point, expressed as <value x y> with each
      item an integer, to set the point (x, y) to value;
-  2. you may enter a value followed by two points, expressed as <value x1 y1 
+  2. you may enter a value followed by two points, expressed as <value x1 y1
      x2> with each item an integer, to set the rectangle defined by (x, y1, x2,
      y2) to value;
   3. you may hit enter to advance the automaton;
@@ -172,7 +167,7 @@ input, at which point you have five options:
 
     Remember GIGO: if you give the program unexpected input, expect unexpected
 output.
-    
+
     After you give it input, it should show the old board with the
 modifications just made (indented), then calculate the new state of the board,
 display it, and solicit input again."""
@@ -180,78 +175,69 @@ display it, and solicit input again."""
     print
 
 def sanitizedMidRunCommand():
-    intentGotten = False
 
     commandStrings = ["",
                       "h",
                       "q",]
-    
-    
-    while intentGotten == False:
+
+
+    userInput = None
+
+    while userInput is None:
         command = raw_input("""\
     Value and point or points, press enter to advance, the lowercase letter h to
 print the introductory message, or the lowercase letter q to end.
 
 > """)
         print
-        
+
         commandList = command.split()
 
         if len(commandList) == 0:
             commandList.append("")
-        
+
         if commandList[0] in commandStrings:
-            userInput = commandList[0]
-            intentGotten = True
+            userInput = commandList[:1]
         else:
-            trimmedCommandListCopy = commandList[:5]
-            for i in range(len(trimmedCommandListCopy)):
-                try:
-                    int(commandList[i])
-                except ValueError:
-                    print """\
+            try:
+                userInput = [int(x) for x in commandList[:5]]
+            except ValueError:
+                print """\
     At least one of those doesn't look like an integer to me."""
-                    break
-                else:
-                    trimmedCommandListCopy[i] = int(commandList[i])
-            else:
-                userInput = trimmedCommandListCopy
-                if len(userInput) < 5:
-                    for i in range(5 - len(userInput)):
-                        userInput.append(None)
-                intentGotten = True
-    else:
-        return userInput
+                continue
+            while len(userInput) < 5:
+                userInput.append(None)
+    return userInput
 
 def main():
     state = State()
     print
-    state.drawBoard()
-    
+
     while True:
+        state.drawBoard()
         userInput = sanitizedMidRunCommand()
 
-        #print userInput
+        what = userInput[0]
 
-        if userInput != "":
-            if userInput == "q":
-                break
-            elif userInput[0] == "h":
-                introduction()
-                state.drawBoard()
-                continue
-            else:
-                num = userInput[0]
-                col1 = userInput[1]
-                row1 = userInput[2]
-                col2 = userInput[3]
-                row2 = userInput[4]
-                state.rows = state.setPoints(num, col1, row1, col2, row2)
-                state.drawBoard("    ")
-                
+        if what == "q":
+            break
+
+        if what == "h":
+            introduction()
+            state.drawBoard()
+            continue
+
+        if isinstance(what, int):
+            num = userInput[0]
+            col1 = userInput[1]
+            row1 = userInput[2]
+            col2 = userInput[3]
+            row2 = userInput[4]
+            state.rows = state.setPoints(num, col1, row1, col2, row2)
+            state.drawBoard("    ")
+
         state.rows = state.calculateBoard()
-        state.drawBoard()        
-    
+
 if __name__ == "__main__":
     introduction()
     main()
